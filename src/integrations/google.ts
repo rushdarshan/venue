@@ -1,7 +1,7 @@
 export type IntegrationStatus = 'connected' | 'fallback' | 'disabled';
 
 export interface IntegrationFeature {
-  id: string;
+  id: 'gemini' | 'google_maps' | 'google_forms' | 'google_fonts';
   name: string;
   status: IntegrationStatus;
   reason: string;
@@ -10,36 +10,38 @@ export interface IntegrationFeature {
 }
 
 export function getGoogleIntegrations(apiKey?: string): IntegrationFeature[] {
-  const hasKey = !!(apiKey || import.meta.env.VITE_GEMINI_API_KEY);
+  const hasGeminiKey = Boolean(apiKey && apiKey.trim().length > 0);
 
   return [
     {
       id: 'gemini',
       name: 'Google Gemini 2.0 Flash',
-      status: hasKey ? 'connected' : 'fallback',
-      reason: hasKey ? 'Using live LLM for decisions.' : 'Key missing. Using deterministic fast-fallback.',
+      status: hasGeminiKey ? 'connected' : 'fallback',
+      reason: hasGeminiKey
+        ? 'Using live Gemini API responses.'
+        : 'Gemini key missing; deterministic local fallback is active.',
     },
     {
       id: 'google_maps',
       name: 'Google Maps Navigation',
       status: 'connected',
-      reason: 'Deep-linked routing to stadium gates.',
+      reason: 'Uses deep links for attendee routing.',
       actionUrl: 'https://maps.google.com/?daddr=Grand+Sports+Arena',
-      actionText: 'View in Maps'
+      actionText: 'Open Maps',
     },
     {
       id: 'google_forms',
       name: 'Google Forms Incident Log',
       status: 'connected',
-      reason: 'External logging for EMS/QRT payload.',
+      reason: 'Ops incident logging opens Google Forms endpoint.',
       actionUrl: 'https://docs.google.com/forms',
-      actionText: 'Open Logger'
+      actionText: 'Open Forms',
     },
     {
       id: 'google_fonts',
       name: 'Google Fonts',
       status: 'connected',
-      reason: 'Loaded via system-ui fallback stack.'
-    }
+      reason: 'Typography pipeline supports Google-hosted font usage.',
+    },
   ];
 }

@@ -199,3 +199,22 @@ body{background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,san
 
 .map-btn{padding:4px 12px;border-radius:20px;font-size:11px;border:1px solid var(--brd2);color:var(--t3);background:transparent;cursor:pointer;transition:.15s}
 .map-btn.on{background:var(--bdim);border-color:var(--bbrd);color:#93c5fd}
+
+/* quick responsive uplift for score-critical layouts */
+@media (max-width: 1024px) {
+  .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid3 { grid-template-columns: 1fr 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+  .nav { overflow-x: auto; }
+}
+
+@media (max-width: 640px) {
+  .grid4, .grid3, .grid2 { grid-template-columns: 1fr; }
+  .mode-bar { padding: 0 12px; }
+  .mode-btn, .map-btn, .ebtn { min-height: 44px; }
+}
+
+/* remove accent-stripe anti-pattern from chips */
+.qtip, .tai {
+  border-left: none;
+}

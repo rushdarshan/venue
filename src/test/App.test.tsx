@@ -76,4 +76,16 @@ describe('App', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument();
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
+
+  it('renders admin navigation tabs as buttons with tab role', () => {
+    render(<App />);
+    expect(screen.getByRole('tab', { name: 'Overview' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Crowd Routing' })).toBeInTheDocument();
+  });
+
+  it('renders google integration status card in overview', () => {
+    render(<App />);
+    expect(screen.getByTestId('integration-card')).toBeInTheDocument();
+    expect(screen.getByText(/Google Gemini 2.0 Flash/i)).toBeInTheDocument();
+  });
 });

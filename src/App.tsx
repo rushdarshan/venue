@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getGoogleIntegrations } from './integrations/google';
+import IntegrationStatusCard from './components/IntegrationStatusCard';
 
 // ─── Types (Code Quality) ─────────────────────────────────────────────────────
 interface Camera {
@@ -29,14 +30,6 @@ interface Incident {
   time: string;
 }
 
-interface QueueItem {
-  name: string;
-  ico: string;
-  pct: number;
-  wait: string;
-  col: string;
-  tip: string;
-}
 
 interface VenueConfig {
   name: string;
@@ -58,7 +51,7 @@ function sanitizeInput(input: string): string {
 }
 
 // ─── Google Services: Gemini AI Integration ───────────────────────────────────
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyCQSV_mXBlfQydZK2bp7kbki4mkrhLTyzU';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY ?? '';
 const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 async function callGeminiAPI(prompt: string, context: string): Promise<string> {
@@ -103,39 +96,6 @@ function evaluateDecisions(cameras: Camera[]): string[] {
 
 const STATUS_COLORS: Record<string, string> = { crit: '#ef4444', warn: '#f59e0b', ok: '#22c55e', info: '#378add' };
 
-// ─── Integration UI Component ──────────────────────────────────────────────────
-function IntegrationStatusCard() {
-  const integrations = useMemo(() => getGoogleIntegrations(GEMINI_API_KEY), []);
-  return (
-    <div className="card" style={{ marginTop: 24 }} data-testid="integration-card">
-      <h2 className="sec-lbl">Google Services Integration Status</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {integrations.map(int => (
-          <div key={int.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg1)', padding: '8px 12px', borderRadius: 6, border: '1px solid var(--brd)' }}>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 13, color: '#f8fafc' }}>{int.name}</div>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>{int.reason}</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {int.actionUrl && (
-                <a href={int.actionUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#60a5fa', textDecoration: 'none' }}>
-                  {int.actionText} ↗
-                </a>
-              )}
-              <span style={{ 
-                fontSize: 10, padding: '2px 8px', borderRadius: 12, fontWeight: 700, textTransform: 'uppercase',
-                background: int.status === 'connected' ? '#166534' : int.status === 'fallback' ? '#854d0e' : '#7f1d1d',
-                color: int.status === 'connected' ? '#4ade80' : int.status === 'fallback' ? '#fde047' : '#fca5a5'
-              }}>
-                {int.status}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
@@ -157,7 +117,7 @@ export default function App() {
     { id: 'CAM-04', name: 'East Gate', zone: 'East Stand', status: 'ok', density: 38, persons: 18, vel: 'Low' },
   ]);
 
-  const [alerts, setAlerts] = useState<Alert[]>([
+  const [, setAlerts] = useState<Alert[]>([
     { id: 1, type: 'crit', title: 'North Stand — 91% density', body: 'Gemini surge alert: restrict Gate A. Rerouting to Gate D.', timestamp: new Date().toISOString() },
     { id: 2, type: 'warn', title: 'Food Court — surge predicted', body: '34% increase in 8 min. Open backup stalls B3–B6.', timestamp: new Date().toISOString() },
   ]);
@@ -172,7 +132,7 @@ export default function App() {
   const [zdData, setZdData] = useState({ name: '', pct: '', ai: '' });
 
   const [adminInput, setAdminInput] = useState('');
-  const [adminMsgs, setAdminMsgs] = useState([{ user: false, text: "Hi! I'm your VenueIQ assistant powered by Google Gemini. What do you need?" }]);
+  const [, setAdminMsgs] = useState([{ user: false, text: "Hi! I'm your VenueIQ assistant powered by Google Gemini. What do you need?" }]);
 
   const [attInput, setAttInput] = useState('');
   const [attMsgs, setAttMsgs] = useState([{ user: false, text: "Hi! I know your seat (N-Block) and venue conditions. How can I help?" }]);
@@ -182,15 +142,13 @@ export default function App() {
   // ─── Memoized values (Efficiency) ────────────────────────────────
   const decisions = useMemo(() => evaluateDecisions(cameras), [cameras]);
 
-  const queues = useMemo<QueueItem[]>(() => [
-    { name: 'Gate A Concessions', ico: '🍔', pct: 91, wait: '13 min', col: '#ef4444', tip: 'Use Gate B' },
-    { name: 'Gate B Concessions', ico: '🥤', pct: 28, wait: '2 min', col: '#22c55e', tip: 'Recommended' },
-    { name: 'Restroom Block W2', ico: '🚻', pct: 22, wait: '0 min', col: '#22c55e', tip: 'Nearest' },
-  ], []);
+
 
   const liveContext = useMemo(() => {
     return `Venue: ${venueConfig.name}, Event: ${venueConfig.event}, Arrived: ${arrBase}, Cameras: ${cameras.map(c => `${c.zone}:${c.density}%`).join(', ')}`;
   }, [venueConfig, arrBase, cameras]);
+
+  const integrations = useMemo(() => getGoogleIntegrations(GEMINI_API_KEY), []);
 
   // ─── Clock ───────────────────────────────────────────────────────
   useEffect(() => {
@@ -357,7 +315,7 @@ export default function App() {
                     </div>
                   </div>
                   {/* GOOGLE INTEGRATIONS STATUS */}
-                  <IntegrationStatusCard />
+                  <IntegrationStatusCard integrations={integrations} />
                 </section>
               )}
 
