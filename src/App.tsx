@@ -204,7 +204,7 @@ export default function App() {
                     {mapLayers.ai && (
                       <g>
                         <rect x="264" y="18" width="86" height="17" rx="3" fill="#1a0808" stroke="#7f1d1d" strokeWidth="1"/>
-                        <text x="270" y="30" fill="#f87171" fontSize="9" fontWeight="600">REROUTE > 85%</text>
+                        <text x="270" y="30" fill="#f87171" fontSize="9" fontWeight="600">REROUTE {'>'} 85%</text>
                       </g>
                     )}
                     <rect x="195" y="96" width="310" height="178" rx="8" fill="#1a3a22"/>
