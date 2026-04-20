@@ -1,73 +1,94 @@
-# React + TypeScript + Vite
+# VenueIQ — AI-Powered Stadium Operations Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Real-time crowd intelligence, AI-driven decision automation, and dynamic attendee navigation for large-scale venues.
 
-Currently, two official plugins are available:
+## 🎯 Problem Statement
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Managing 80,000+ attendees at live events creates critical challenges: crowd surges at gates, long food/restroom queues, unsafe egress after matches, and slow incident response. Current systems are passive dashboards — they show problems but don't solve them.
 
-## React Compiler
+## 💡 Solution
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**VenueIQ** is an ops-first control loop that **detects → decides → acts → guides** in real time:
 
-## Expanding the ESLint configuration
+| Layer | What it does |
+|---|---|
+| **Crowd-Aware Routing** | Dijkstra pathfinding with congestion penalties. Routes avoid surging zones automatically. |
+| **Decision Engine** | Rule-based thresholds (90%+ density, 15min+ queues) trigger recommended operator actions. |
+| **Incident Command** | Medical/safety workflow: `new → assigned → in_progress → resolved` with QRT dispatch. |
+| **What-If Forecasting** | Simulates +5 and +10 minute scenarios so ops acts proactively, not reactively. |
+| **Egress Wave Control** | Post-match controlled exit: sections released in waves to prevent stampede risk. |
+| **Attendee Guidance** | Real-time route cards, queue recommendations, and wave assignments pushed to fans. |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏗️ Architecture
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+┌─────────────────────────────────────┐
+│          VenueIQ Platform           │
+│   Ops Panel  ←→  Attendee View     │
+└──────────────┬──────────────────────┘
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+┌───▼───┐ ┌───▼───┐ ┌───▼────┐
+│Decision│ │Routing│ │Incident│
+│Engine  │ │Engine │ │Engine  │
+│(rules) │ │(crowd)│ │(safety)│
+└───┬────┘ └───┬───┘ └───┬────┘
+    │          │          │
+    └────┬─────┴────┬─────┘
+         │          │
+    ┌────▼───┐ ┌───▼──────┐
+    │Egress  │ │What-If   │
+    │Waves   │ │Forecaster│
+    └────────┘ └──────────┘
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🖥️ Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Ops Panel (Admin)
+- **Overview** — Live KPI dashboard (arrivals, AI reroutes, incidents) + zone density bars + queue rebalancing
+- **Crowd Routing Map** — SVG heatmap with auto-reroute trigger overlays
+- **Incident Command** — Active incident tracking with severity tiers and resolve workflow
+- **What-If Forecast** — Toggle between Live/+5M Surge/+10M Post-Match scenarios with ops recommendations
+- **Egress Waves** — Wave scheduling (South→West→North) with broadcast controls
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Attendee View
+- **Egress wave assignment** with countdown
+- **Crowd-aware exit route** (avoid congested zones)
+- **AI chat assistant** for food, restrooms, seat directions
+- **Real-time safety alerts**
+
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/rushdarshan/venue.git
+cd venue
+npm install
+npm run dev
 ```
+
+Open `http://localhost:5173`
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 19 + TypeScript + Vite
+- **Styling:** Custom CSS design system (dark ops theme)
+- **Simulation:** 4-second tick loop with auto-alert generation
+- **State:** React hooks with real-time density updates
+
+## 📊 Demo Flow
+
+1. Open app → **Overview** shows live arrivals, zone densities, queue wait times
+2. **Crowd Routing** → Click North Stand to see congestion details + auto-reroute trigger
+3. **Incident Command** → See active medical incident, click Resolve
+4. **What-If** → Click "+5 Mins (Surge)" to see Food Court spike to 96% with ops recommendation
+5. **Egress Waves** → Wave scheduling for controlled post-match exit
+6. Switch to **Attendee** → See wave assignment, crowd-aware exit route, AI assistant
+
+## 👥 Team
+
+- Rushdarshan
+
+## 📄 License
+
+MIT
