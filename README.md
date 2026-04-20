@@ -69,12 +69,18 @@ npm run dev
 
 Open `http://localhost:5173`
 
+## 🛠️ Google Services Integration
+
+- **Google Gemini 2.0 Flash:** Integrates directly with the `App.tsx` chat layer. Dynamically synthesizes live venue statistics (density, queue data) to recommend routes and strategies to Ops and Attendees. Implemented with a graceful deterministic fallback if keys are omitted. 
+- **Google Maps:** Deep-linked coordinate routing exposed via the Integration panel for rapid EMS egress navigation.
+- **Google Forms:** External structured logging linkage integrated into the Ops Dashboard for QRT deployment tracking.
+- **Google Fonts:** System UI typography mapping loaded seamlessly for performant rendering.
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** React 19 + TypeScript + Vite
 - **Styling:** Custom CSS design system (dark ops theme)
-- **Simulation:** 4-second tick loop with auto-alert generation
-- **State:** React hooks with real-time density updates
+- **State/Sim:** React hooks + 4s simulation loop
 
 ## 📊 Demo Flow
 
